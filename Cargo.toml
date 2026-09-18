@@ -1,0 +1,14 @@
+[package]
+name = "rog-osd-switch"
+version = "0.2.0"
+edition = "2024"
+description = "Lightweight native OSD hotkeys for the ASUS ROG Strix XG32UCWMG"
+license = "MIT"
+rust-version = "1.85"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = "s"
+panic = "abort"
+strip = true
