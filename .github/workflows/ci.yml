@@ -15,6 +15,35 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo test --all-targets
 
+  linux-gui-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y python3-gi gir1.2-gtk-3.0 xvfb
+      - run: xvfb-run -a /usr/bin/python3 -m unittest discover -s tests -v
+
+  linux-release:
+    needs: [test, linux-gui-test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --release
+      - name: Package Linux backend, tray, and installer
+        run: |
+          package=dist/rog-osd-switch-linux-x64
+          mkdir -p "$package/target/release" "$package/linux/icons" "$package/scripts"
+          cp target/release/rog-osd-switch "$package/target/release/"
+          cp linux/tray.py "$package/linux/"
+          cp linux/icons/rog-osd-switch.svg "$package/linux/icons/"
+          cp scripts/install-linux.sh "$package/scripts/"
+          cp README.md LICENSE "$package/"
+          tar -C dist -czf dist/rog-osd-switch-linux-x64.tar.gz rog-osd-switch-linux-x64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rog-osd-switch-linux-x64
+          path: dist/rog-osd-switch-linux-x64.tar.gz
+
   windows-release:
     runs-on: windows-latest
     steps:
