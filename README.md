@@ -68,9 +68,12 @@ cargo build --release
 ~/.local/bin/rog-osd-switch-start --settings
 ```
 
-GitHub Actions also produces a `rog-osd-switch-linux-x64` artifact containing
-the compiled backend, tray app, and installer. Extract its tarball and run
-`./scripts/install-linux.sh`; Rust is only needed when building from source.
+Download the prebuilt **rog-osd-switch-linux-x64.tar.gz** from
+[GitHub Releases](https://github.com/freddirty/rog-osd-switch/releases/latest).
+Extract it, enter the extracted directory, and run `./scripts/install-linux.sh`.
+Rust is only needed when building from source. GitHub Actions also provides
+build artifacts for branch builds; version tags publish Windows and Linux
+packages together after the tests pass.
 
 The installer installs for the current user, enables login autostart on the first
 installation, and preserves saved shortcuts and the autostart choice on upgrades.

@@ -54,3 +54,31 @@ jobs:
         with:
           name: rog-osd-switch-windows-x64
           path: target/release/rog-osd-switch.exe
+
+  publish-release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [linux-release, windows-release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: rog-osd-switch-*
+          merge-multiple: true
+          path: release-assets
+      - name: Generate checksums
+        working-directory: release-assets
+        run: sha256sum rog-osd-switch-linux-x64.tar.gz rog-osd-switch.exe > SHA256SUMS
+      - name: Publish Windows and Linux release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --verify-tag \
+            --title "ROG OSD Switch $GITHUB_REF_NAME" \
+            --notes-file "docs/releases/$GITHUB_REF_NAME.md" \
+            release-assets/rog-osd-switch-linux-x64.tar.gz \
+            release-assets/rog-osd-switch.exe \
+            release-assets/SHA256SUMS

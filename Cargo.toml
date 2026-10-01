@@ -1,6 +1,6 @@
 [package]
 name = "rog-osd-switch"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 description = "Lightweight native OSD hotkeys for the ASUS ROG Strix XG32UCWMG"
 license = "MIT"
